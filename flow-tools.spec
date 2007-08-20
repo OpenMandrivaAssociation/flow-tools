@@ -69,7 +69,8 @@ subversions.
 %package -n	flow-capture
 Summary:	Manage storage of flow file archives by expiring old data
 Group:		System/Servers
-PreReq:		rpm-helper
+Requires(post):		rpm-helper
+Requires(preun):		rpm-helper
 Requires:	flow-tools = %{version}-%{release}
 
 %description -n	flow-capture
