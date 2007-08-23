@@ -4,7 +4,7 @@
 Summary:	Tool set for working with NetFlow data
 Name:		flow-tools
 Version:	0.68
-Release:	%mkrel 2
+Release:	%mkrel 3
 License:	BSD
 Group:		Monitoring
 URL:		http://www.splintered.net/sw/flow-tools/
