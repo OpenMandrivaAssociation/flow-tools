@@ -1,10 +1,11 @@
 %define	major 0
-%define libname	%mklibname ft %{major}
+%define libname %mklibname ft %{major}
+%define develname %mklibname ft -d
 
 Summary:	Tool set for working with NetFlow data
 Name:		flow-tools
 Version:	0.68
-Release:	%mkrel 3
+Release:	%mkrel 4
 License:	BSD
 Group:		Monitoring
 URL:		http://www.splintered.net/sw/flow-tools/
@@ -50,14 +51,15 @@ provides an API for development of custom applications for NetFlow
 export versions 1,5,6 and the 14 currently defined version 8
 subversions.
 
-%package -n	%{libname}-devel
+%package -n	%{develname}
 Summary:	Development headers and libraries for %{name}
 Group:		Development/C
-Obsoletes:	%{name}-devel libft-devel
-Provides:	%{name}-devel libft-devel
 Requires:	%{libname} = %{version}-%{release}
+Provides:	%{name}-devel libft-devel
+Obsoletes:	%{name}-devel
+Obsoletes:	%{mklibname ft 0 -d}
 
-%description -n	%{libname}-devel
+%description -n	%{develname}
 Flow-tools is library and a collection of programs used to
 collect, send, process, and generate reports from NetFlow data.
 The tools can be used together on a single server or distributed
@@ -69,8 +71,8 @@ subversions.
 %package -n	flow-capture
 Summary:	Manage storage of flow file archives by expiring old data
 Group:		System/Servers
-Requires(post):		rpm-helper
-Requires(preun):		rpm-helper
+Requires(post): rpm-helper
+Requires(preun): rpm-helper
 Requires:	flow-tools = %{version}-%{release}
 
 %description -n	flow-capture
@@ -203,12 +205,10 @@ perl -pi -e "s|/usr/local/bin/python|%{_bindir}/python|g" %{buildroot}%{_sbindir
 %defattr(-,root,root)
 %{_libdir}/*.so.*
 
-%files -n %{libname}-devel
+%files -n %{develname}
 %defattr(-,root,root)
 %doc docs/*.html
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/*.a
 %{_libdir}/*.la
-
-
