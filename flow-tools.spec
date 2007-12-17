@@ -27,7 +27,6 @@ BuildRequires:	libtool
 #BuildRequires:	MySQL-devel
 #BuildRequires:	postgresql-libs-devel
 #BuildRequires:	postgresql-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}
 
 %description
 Flow-tools is library and a collection of programs used to
