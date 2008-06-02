@@ -115,7 +115,7 @@ export DONT_GPRINTIFY=1
 
 install -d %{buildroot}%{_initrddir}
 install -d %{buildroot}%{_sysconfdir}/ft
-install -d %{buildroot}%{_localstatedir}/flow-capture
+install -d %{buildroot}%{_localstatedir}/lib/flow-capture
 
 install -m0755 flow-capture.init %{buildroot}%{_initrddir}/flow-capture
 install -m0644 flow-capture.conf %{buildroot}%{_sysconfdir}/flow-capture.conf
@@ -199,7 +199,7 @@ perl -pi -e "s|/usr/local/bin/python|%{_bindir}/python|g" %{buildroot}%{_sbindir
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/flow-capture.conf
 %{_sbindir}/flow-capture
 %{_mandir}/man1/flow-capture.1*
-%dir %{_localstatedir}/flow-capture
+%dir %{_localstatedir}/lib/flow-capture
 
 %files -n %{libname}
 %defattr(-,root,root)
