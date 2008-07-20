@@ -5,7 +5,7 @@
 Summary:	Tool set for working with NetFlow data
 Name:		flow-tools
 Version:	0.68
-Release:	%mkrel 4
+Release:	%mkrel 5
 License:	BSD
 Group:		Monitoring
 URL:		http://www.splintered.net/sw/flow-tools/
@@ -15,6 +15,7 @@ Source2:	flow-capture.conf
 Patch0:		flow-tools-0.67-shared.diff
 Patch1:		flow-tools-0.68-debug.diff
 Patch2:		flow-tools-0.68-gcc4.diff
+Patch3:		flow-tools-libtool_fixes.diff
 Requires:	tcp_wrappers
 BuildRequires:	docbook-utils
 BuildRequires:	bison
@@ -27,7 +28,7 @@ BuildRequires:	libtool
 #BuildRequires:	MySQL-devel
 #BuildRequires:	postgresql-libs-devel
 #BuildRequires:	postgresql-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Flow-tools is library and a collection of programs used to
@@ -85,6 +86,7 @@ disk.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p0
 
 cp %{SOURCE1} flow-capture.init
 cp %{SOURCE2} flow-capture.conf
@@ -104,7 +106,7 @@ libtoolize --copy --force; aclocal-1.7; autoconf; automake-1.7 --add-missing
 %make CFLAGS="%{optflags} -fPIC"
 
 %install
-[ -n "%{buildroot}" -a "%{buildroot}" != / ] && rm -rf %{buildroot}
+rm -rf %{buildroot}
 
 # don't fiddle with the initscript!
 export DONT_GPRINTIFY=1
@@ -115,7 +117,7 @@ export DONT_GPRINTIFY=1
 
 install -d %{buildroot}%{_initrddir}
 install -d %{buildroot}%{_sysconfdir}/ft
-install -d %{buildroot}%{_localstatedir}/lib/flow-capture
+install -d %{buildroot}/var/lib/flow-capture
 
 install -m0755 flow-capture.init %{buildroot}%{_initrddir}/flow-capture
 install -m0644 flow-capture.conf %{buildroot}%{_sysconfdir}/flow-capture.conf
@@ -140,7 +142,7 @@ perl -pi -e "s|/usr/local/bin/python|%{_bindir}/python|g" %{buildroot}%{_sbindir
 %endif
 
 %clean
-[ -n "%{buildroot}" -a "%{buildroot}" != / ] && rm -rf %{buildroot}
+rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
@@ -203,7 +205,7 @@ perl -pi -e "s|/usr/local/bin/python|%{_bindir}/python|g" %{buildroot}%{_sbindir
 %config(noreplace) %attr(0644,root,root) %{_sysconfdir}/flow-capture.conf
 %{_sbindir}/flow-capture
 %{_mandir}/man1/flow-capture.1*
-%dir %{_localstatedir}/lib/flow-capture
+%dir /var/lib/flow-capture
 
 %files -n %{libname}
 %defattr(-,root,root)
