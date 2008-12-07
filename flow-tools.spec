@@ -25,7 +25,7 @@ BuildRequires:	tcp_wrappers-devel
 BuildRequires:	autoconf2.5
 BuildRequires:	automake1.7
 BuildRequires:	libtool
-#BuildRequires:	MySQL-devel
+#BuildRequires:	mysql-devel
 #BuildRequires:	postgresql-libs-devel
 #BuildRequires:	postgresql-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
