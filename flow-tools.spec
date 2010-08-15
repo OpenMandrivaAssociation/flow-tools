@@ -12,10 +12,6 @@ URL:		http://code.google.com/p/flow-tools/
 Source0:	http://flow-tools.googlecode.com/files/flow-tools-%{version}.tar.bz2
 Source1:	flow-capture.init
 Source2:	flow-capture.conf
-Patch0:		flow-tools-0.67-shared.diff
-Patch1:		flow-tools-0.68-debug.diff
-Patch2:		flow-tools-0.68-gcc4.diff
-Patch3:		flow-tools-libtool_fixes.diff
 Patch4:		flow-tools-0.68-format_not_a_string_literal_and_no_format_arguments.diff
 Requires:	tcp_wrappers
 BuildRequires:	docbook-utils
@@ -113,10 +109,6 @@ format.
 
 %prep
 %setup -q 
-#patch0 -p1
-#patch1 -p1
-#patch2 -p1
-#patch3 -p0
 %patch4 -p0
 
 cp %{SOURCE1} flow-capture.init
