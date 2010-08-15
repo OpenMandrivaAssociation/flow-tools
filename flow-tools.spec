@@ -93,7 +93,7 @@ from flow data.
 
 %package docs
 Summary:    HTML and other redundant docs for flow-tools
-Group:      Applications/System
+Group:      Monitoring
 
 %description docs
 Flow-tools is library and a collection of programs used to collect,
