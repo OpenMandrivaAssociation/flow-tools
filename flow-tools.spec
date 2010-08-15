@@ -4,12 +4,12 @@
 
 Summary:	Tool set for working with NetFlow data
 Name:		flow-tools
-Version:	0.68
-Release:	%mkrel 7
+Version:	0.68.5
+Release:	%mkrel 1
 License:	BSD
 Group:		Monitoring
-URL:		http://www.splintered.net/sw/flow-tools/
-Source0:	ftp://ftp.eng.oar.net/pub/flow-tools/%{name}-%{version}.tar.bz2
+URL:		http://code.google.com/p/flow-tools/
+Source0:	http://flow-tools.googlecode.com/files/flow-tools-%{version}.tar.bz2
 Source1:	flow-capture.init
 Source2:	flow-capture.conf
 Patch0:		flow-tools-0.67-shared.diff
@@ -23,12 +23,8 @@ BuildRequires:	bison
 BuildRequires:	flex
 BuildRequires:	zlib-devel
 BuildRequires:	tcp_wrappers-devel
-BuildRequires:	autoconf2.5
-BuildRequires:	automake1.7
-BuildRequires:	libtool
-#BuildRequires:	mysql-devel
-#BuildRequires:	postgresql-libs-devel
-#BuildRequires:	postgresql-devel
+BuildRequires:	mysql-devel
+BuildRequires:	postgresql-devel
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
@@ -81,41 +77,64 @@ Requires:	flow-tools = %{version}-%{release}
 The flow-capture utility will receive and store NetFlow exports to
 disk.
 
-%prep
+%package rrdtool
+Summary:    Scripts for flow-tools to build rrd graphs
+Group:		Monitoring
+Requires:   %{name} = %{version}-%{release}
+Requires:   rrdtool-python
 
+%description rrdtool
+Flow-tools is library and a collection of programs used to collect,
+send, process, and generate reports from NetFlow data. The tools can be
+used together on a single server or distributed to multiple servers for
+large deployments. The flow-toools library provides an API for development
+of custom applications for NetFlow export versions 1,5,6 and the 14 currently
+defined version 8 subversions. A Perl and Python interface have been
+contributed and are included in the distribution. 
+
+This package contains scripts that use python-rrdtool to create rrds and graphs
+from flow data. 
+
+%package docs
+Summary:    HTML and other redundant docs for flow-tools
+Group:      Applications/System
+
+%description docs
+Flow-tools is library and a collection of programs used to collect,
+send, process, and generate reports from NetFlow data. The tools can be
+used together on a single server or distributed to multiple servers for
+large deployments. The flow-toools library provides an API for development
+of custom applications for NetFlow export versions 1,5,6 and the 14 currently
+defined version 8 subversions. A Perl and Python interface have been
+contributed and are included in the distribution.
+
+This package contains additional documentation, such as man pages in html
+format.
+
+%prep
 %setup -q 
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p0
+#patch0 -p1
+#patch1 -p1
+#patch2 -p1
+#patch3 -p0
 %patch4 -p0
 
 cp %{SOURCE1} flow-capture.init
 cp %{SOURCE2} flow-capture.conf
 
 %build
-export WANT_AUTOCONF_2_5=1
-libtoolize --copy --force; aclocal-1.7; autoconf; automake-1.7 --add-missing
-
 %configure2_5x \
+    --localstatedir=%{_localstatedir}/%{name} \
+    --sysconfdir=%{_sysconfdir}/%{name} \
     --bindir=%{_sbindir} \
-    --localstatedir=%{_sysconfdir}/ft \
-    --enable-lfs
-
-#    --with-mysql=%{_prefix} \
-#    --with-pgsql=%{_prefix}
-
-%make CFLAGS="%{optflags} -fPIC"
+    --with-mysql \
+    --with-postgresql \
+    --with-openssl
 
 %install
 rm -rf %{buildroot}
 
-# don't fiddle with the initscript!
-export DONT_GPRINTIFY=1
-
-%makeinstall \
-    localstatedir=%{buildroot}%{_sysconfdir}/ft \
-    bindir=%{buildroot}%{_sbindir}
+%makeinstall_std
 
 install -d %{buildroot}%{_initrddir}
 install -d %{buildroot}%{_sysconfdir}/ft
@@ -149,9 +168,11 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc ChangeLog README SECURITY TODO
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/ft/cfg/*
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/ft/sym/*
-%dir %{_sysconfdir}/ft
+%dir %{_sysconfdir}/%{name}
+%dir %{_sysconfdir}/%{name}/cfg
+%dir %{_sysconfdir}/%{name}/sym
+%config(noreplace) %{_sysconfdir}/%{name}/cfg/*
+%config(noreplace) %{_sysconfdir}/%{name}/sym/*
 %{_sbindir}/flow-cat
 %{_sbindir}/flow-dscan
 %{_sbindir}/flow-expire
@@ -172,8 +193,6 @@ rm -rf %{buildroot}
 %{_sbindir}/flow-stat
 %{_sbindir}/flow-tag
 %{_sbindir}/flow-xlate
-%{_sbindir}/flow-log2rrd
-%{_sbindir}/flow-rpt2rrd
 %{_sbindir}/flow-rptfmt
 %{_mandir}/man1/flow-cat.1*
 %{_mandir}/man1/flow-dscan.1*
@@ -197,17 +216,27 @@ rm -rf %{buildroot}
 %{_mandir}/man1/flow-tools.1*
 %{_mandir}/man1/flow-tools-examples.1*
 %{_mandir}/man1/flow-xlate.1*
-%{_mandir}/man1/flow-log2rrd.1*
-%{_mandir}/man1/flow-rpt2rrd.1*
 %{_mandir}/man1/flow-rptfmt.1*
+%{_datadir}/%{name}
 
 %files -n flow-capture
 %defattr(-,root,root)
-%attr(0755,root,root) %{_initrddir}/flow-capture
-%config(noreplace) %attr(0644,root,root) %{_sysconfdir}/flow-capture.conf
+%{_initrddir}/flow-capture
+%config(noreplace) %{_sysconfdir}/flow-capture.conf
 %{_sbindir}/flow-capture
 %{_mandir}/man1/flow-capture.1*
 %dir /var/lib/flow-capture
+
+%files rrdtool
+%defattr(-,root,root)
+%{_sbindir}/flow-log2rrd
+%{_sbindir}/flow-rpt2rrd
+%{_mandir}/man1/flow-log2rrd.1*
+%{_mandir}/man1/flow-rpt2rrd.1*
+
+%files docs
+%defattr(-,root,root)
+%doc docs/*.html ChangeLog.old TODO INSTALL SECURITY 
 
 %files -n %{libname}
 %defattr(-,root,root)
