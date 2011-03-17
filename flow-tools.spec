@@ -5,7 +5,7 @@
 Summary:	Tool set for working with NetFlow data
 Name:		flow-tools
 Version:	0.68.5.1
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	BSD
 Group:		Monitoring
 URL:		http://code.google.com/p/flow-tools/
