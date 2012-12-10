@@ -5,7 +5,7 @@
 Summary:	Tool set for working with NetFlow data
 Name:		flow-tools
 Version:	0.68.5.1
-Release:	%mkrel 2
+Release:	4
 License:	BSD
 Group:		Monitoring
 URL:		http://code.google.com/p/flow-tools/
@@ -21,7 +21,6 @@ BuildRequires:	zlib-devel
 BuildRequires:	tcp_wrappers-devel
 BuildRequires:	mysql-devel
 BuildRequires:	postgresql-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Flow-tools is library and a collection of programs used to
@@ -77,7 +76,7 @@ disk.
 Summary:    Scripts for flow-tools to build rrd graphs
 Group:		Monitoring
 Requires:   %{name} = %{version}-%{release}
-Requires:   rrdtool-python
+Requires:   python-rrdtool
 
 %description rrdtool
 Flow-tools is library and a collection of programs used to collect,
@@ -146,19 +145,7 @@ perl -pi -e "s|/usr/local/bin/python|%{_bindir}/python|g" %{buildroot}%{_sbindir
 %preun -n flow-capture
 %_preun_service flow-capture
 
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-
-%clean
-rm -rf %{buildroot}
-
 %files
-%defattr(-,root,root)
 %doc ChangeLog README SECURITY TODO
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/cfg
@@ -231,7 +218,6 @@ rm -rf %{buildroot}
 %doc docs/*.html ChangeLog.old TODO INSTALL SECURITY 
 
 %files -n %{libname}
-%defattr(-,root,root)
 %{_libdir}/*.so.*
 
 %files -n %{develname}
@@ -240,4 +226,5 @@ rm -rf %{buildroot}
 %{_includedir}/*
 %{_libdir}/*.so
 %{_libdir}/*.a
-%{_libdir}/*.la
+
+

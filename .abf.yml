@@ -1,4 +1,2 @@
 sources:
-  "flow-capture.conf:"	0b5b3018ae9a2ec42fc3257a94f01f6510321158
-  "flow-capture.init:"	531d0f1af43de04ae8465690988a058c98493fac
-  "flow-tools-0.68.5.1.tar.bz2:"	4a843aada631650e3777a9b1eeb4ec46562cf0d0
+  "flow-tools-0.68.5.1.tar.bz2": 4a843aada631650e3777a9b1eeb4ec46562cf0d0
