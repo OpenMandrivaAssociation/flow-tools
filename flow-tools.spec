@@ -221,6 +221,5 @@ perl -pi -e "s|/usr/local/bin/python|%{_bindir}/python|g" %{buildroot}%{_sbindir
 %doc docs/*.html
 %{_includedir}/*
 %{_libdir}/*.so
-%{_libdir}/*.a
 
 
