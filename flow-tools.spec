@@ -5,12 +5,12 @@
 Summary:	Tool set for working with NetFlow data
 Name:		flow-tools
 Version:	0.68.5.1
-Release:	4
+Release:	6
 License:	BSD
 Group:		Monitoring
 URL:		http://code.google.com/p/flow-tools/
 Source0:	http://flow-tools.googlecode.com/files/flow-tools-%{version}.tar.bz2
-Source1:	flow-capture.init
+Source1:	flow-capture.service
 Source2:	flow-capture.conf
 Patch4:		flow-tools-0.68-format_not_a_string_literal_and_no_format_arguments.diff
 Requires:	tcp_wrappers
@@ -110,7 +110,6 @@ format.
 %setup -q 
 %patch4 -p0
 
-cp %{SOURCE1} flow-capture.init
 cp %{SOURCE2} flow-capture.conf
 
 %build
@@ -123,15 +122,13 @@ cp %{SOURCE2} flow-capture.conf
     --with-openssl
 
 %install
-rm -rf %{buildroot}
-
 %makeinstall_std
 
-install -d %{buildroot}%{_initrddir}
+install -d %{buildroot}%{_unitdir}
 install -d %{buildroot}%{_sysconfdir}/ft
 install -d %{buildroot}/var/lib/flow-capture
 
-install -m0755 flow-capture.init %{buildroot}%{_initrddir}/flow-capture
+install -m0755 %{SOURCE1} %{buildroot}%{_unitdir}/flow-capture.service
 install -m0644 flow-capture.conf %{buildroot}%{_sysconfdir}/flow-capture.conf
 
 # python path fix
@@ -140,10 +137,13 @@ perl -pi -e "s|/usr/local/bin/python|%{_bindir}/python|g" %{buildroot}%{_sbindir
 perl -pi -e "s|/usr/local/bin/python|%{_bindir}/python|g" %{buildroot}%{_sbindir}/flow-rptfmt
 
 %post -n flow-capture
-%_post_service flow-capture
+%systemd_post flow-capture.service
 
 %preun -n flow-capture
-%_preun_service flow-capture
+%systemd_preun flow-capture.service
+
+%postun -n flow-capture
+%systemd_postun
 
 %files
 %doc ChangeLog README SECURITY TODO
@@ -199,29 +199,25 @@ perl -pi -e "s|/usr/local/bin/python|%{_bindir}/python|g" %{buildroot}%{_sbindir
 %{_datadir}/%{name}
 
 %files -n flow-capture
-%defattr(-,root,root)
-%{_initrddir}/flow-capture
+%{_unitdir}/flow-capture*
 %config(noreplace) %{_sysconfdir}/flow-capture.conf
 %{_sbindir}/flow-capture
 %{_mandir}/man1/flow-capture.1*
 %dir /var/lib/flow-capture
 
 %files rrdtool
-%defattr(-,root,root)
 %{_sbindir}/flow-log2rrd
 %{_sbindir}/flow-rpt2rrd
 %{_mandir}/man1/flow-log2rrd.1*
 %{_mandir}/man1/flow-rpt2rrd.1*
 
 %files docs
-%defattr(-,root,root)
 %doc docs/*.html ChangeLog.old TODO INSTALL SECURITY 
 
 %files -n %{libname}
 %{_libdir}/*.so.*
 
 %files -n %{develname}
-%defattr(-,root,root)
 %doc docs/*.html
 %{_includedir}/*
 %{_libdir}/*.so
