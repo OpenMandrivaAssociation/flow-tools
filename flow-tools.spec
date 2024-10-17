@@ -8,7 +8,7 @@ Version:	0.68.5.1
 Release:	8
 License:	BSD
 Group:		Monitoring
-URL:		http://code.google.com/p/flow-tools/
+URL:		https://code.google.com/p/flow-tools/
 Source0:	http://flow-tools.googlecode.com/files/flow-tools-%{version}.tar.bz2
 Source1:	flow-capture.service
 Source2:	flow-capture.conf
