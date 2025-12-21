@@ -14,6 +14,11 @@ Source1:	flow-capture.service
 Source2:	flow-capture.conf
 Patch4:		flow-tools-0.68-format_not_a_string_literal_and_no_format_arguments.diff
 Requires:	tcp_wrappers
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	docbook-utils
 BuildRequires:	bison
 BuildRequires:	flex
